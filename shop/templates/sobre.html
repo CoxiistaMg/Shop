@@ -1,0 +1,72 @@
+{% extends 'base.html' %}{% load static%}
+
+{% block content%}
+<br>
+<div class='container'>
+    <div class='row my-5'>
+        <div class='card col-10 my-5'>
+            <div class='my-5'>
+                <h1> Creditos/Ferramentas </h1>
+                <span>
+                    Eu usei uma base uma base front-end(<a href='https://mdbootstrap.com/docs/standard/'>creditos</a>), além disso eu usei
+                    algumas imagens free mas que me foi recomendado atribuir autoria <a href='https://www.freepik.com/?_gl=1*1l8xsvh*test_ga*MTAyMDgxMjk3Ny4xNjU4MTU0MTYy*test_ga_523JXC6VL7*MTY1ODcxNzYyMS4zLjEuMTY1ODcxNzY5My42MA..*fp_ga*MTAyMDgxMjk3Ny4xNjU4MTU0MTYy*fp_ga_1ZY8468CQB*MTY1ODcxNzYyMS4zLjEuMTY1ODcxNzY5My42MA..'>Freepik</a>,
+                    na parte de backend eu ultilizei o stack over-flow para me ajudar na produção deste projeto e as documentações relacionadas com o django.
+                </span>
+            </div>
+            <div class='my-5'>
+            <h1> Qual meu propósito ? </h1>
+            <span> 
+                Eu pretendo me tornar um desenvolvedor backend junior, eu estou desenvolvendo
+                meu primeiro projeto, eu tive amigos que entraram na área de desenvolvimento(no geral não
+                apenas web) e particulamente eu gostei, eu quero usar esse site como um inicio para 
+                começar a ultilizar python e django na prática, além de aprender a postar um site na web.
+               
+            </span>
+        </div>
+        <div class='my-5'>
+            <h1> Função do Site </h1>
+            <span>
+                Eu quero desenvolver um e-commerce ultilizando o django, que tenha algumas funções 
+                extras, em comparação a projetos que se encontra no youtube, como por exemplo
+                um sistema de busca usando tags(Basicamente uma tabela, com apenas um nome e um id)
+                que é associada a tabela Produtos usando ManyToManyField(Função, que é ultilizada
+                através da orientação a objetos, do python para criar um relação many to many no mysql),
+                o site deve ter alguma funcionalidade mesmo não sendo um e-commerce real, deve manter 
+                um histórico do usuário, como por exemplo no carrinho do usuário. No meu site vai ter
+                recomendações de categorias na pagina detalhada do produto, nota dos usuários para os produtos
+                e sistema de comentários  
+            </span>
+        </div>
+        <div class='my-5'>
+            <h1 class='mb-3'> Escolhas/Alternativas </h1>
+            <span class='mb-3'>
+                <h3>Usuário</h3>
+                Para registrar um usuário no meu site é necessário uma verificação no E-mail, para isso eu apenas
+                fiz uma view para o preenchimento dos dados e outra view para a checkagem da token a verificação
+                vai ser enviada no E-mail e o código é gerado com urlsafe_base64_encode(force_bytes(user.pk)). 
+                O usuário 
+                deve preencher os campos(E-mail, nome completo, Senha, confirme a senha), ultilizei 
+                o AbstractBaseUser e o AbstractBaseManagerUser do django.contrib.auth.models para fazer essas
+                configurações, eu também personalizei o admin para esse novo modelo de usuário e criei forms para esse novo 
+                modelo 
+            </span>
+            <span class='class='mb-3>
+                <h3> Carrinho</h3>
+                Eu preferir fazer o histórico do carrinho do usuário usando o django session, para que mesmo com os
+                usuários deslogado consigam construir seu carrinho, devido a isso antes de usar a função
+                logout(django.contrib.auth import logout) é preciso fazer um backup do carrinho dentro do session 
+                para que após o logout o carrinho seja restaurado. Eu tinha visto no stack-overflow como fazer uma
+                custom LogoutView e era ultilizado a função logout, com testes eu percebi que o carrinho dentro do
+                session era resetado, então eu customizei para ter um backup usando apenas uma variável dentro do python
+                que após o logout o carrinho é recuperado, como eu sei que o session tem formato de dicionario eu poderia
+                deletar as outras chaves(['_auth_user_id'], ['_auth_user_backend'], ['_auth_user_hash']), mas preferir ir 
+                pelo safe que é usar função do próprio django para depois recuperar através do backup, assim eu achei mais seguro.
+                Caso o usuário faça login o carrinho do usuário estará dentro do mysql, e caso antes do login já tinha
+                itens adicionados no carrinho dentro do banco de dados(mysql) esses novos itens apenas vão ser 
+                adicionados, então um usuário pode montar o carrinho no celular e acessar esse mesmo carrinho após
+                o login em outros dispositivo
+            </span>
+        </div>
+    </div>
+</div>
+{% endblock%}

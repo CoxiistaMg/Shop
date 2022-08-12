@@ -1,0 +1,283 @@
+{% extends 'base.html'%}{% load static%}
+
+{% block content%}
+
+<main class="mt-5 pt-4">
+    <div class="container dark-grey-text mt-5">
+
+      <!--Grid row-->
+      <div class="row">
+
+        <!--Grid column-->
+        <div class="col-md-6 mb-4">
+
+          <img src="{{object.imagem.url}}" style='height: 400px;' class="img-fluid" alt="">
+
+        </div>
+        <!--Grid column-->
+
+        <!--Grid column-->
+        <div class="col-md-6 mb-4">
+
+          <!--Content-->
+          <div class="p-4">
+
+            <div class="mb-3">
+                <h3>{{object.nome}}</h3>
+             {% if object.categoria%}
+             <a href="">
+              
+              <span class="badge purple mr-1">
+                <i class='{{object.categoria.icon}}'></i>
+                {{object.categoria.nome}}</span>
+            </a>
+
+             {% endif%}
+
+            {% if object.subcategoria%}
+             <a href="">
+              
+              <span class="badge red mr-1">
+                <i class='{{object.subcategoria.icon}}'></i> {{object.subcategoria.nome}}</span>
+            </a>
+
+             {% endif%}
+            
+            {% if object.desconto%}
+            <p class="lead">
+                <span class="mr-1">
+                  <del>R$ {{object.preco}}</del>
+                </span>
+                <span> R$ {{object.preco|desconto:object.desconto}}</span>
+              </p>
+  
+            {% else %}
+            <p class="lead">
+                <span>R$ {{object.preco}}</span>
+              </p>
+
+            {% endif%}
+            <p class="lead font-weight-bold">Descrição</p>
+
+            <p>{{object.descricao}}</p>
+
+            <form action='{% url "add" slug=object.slug%}' method="post">
+              {% csrf_token %}
+              <select name='quantidade' style='height: 38px; width: 50px;'>
+                {% for values in "x"|rjust:"10"%}
+                <option value='{{forloop.counter}}'>{{forloop.counter}}</option>
+                {%endfor%}
+
+              </select>
+              <button class="btn btn-primary btn-md my-0 p" type="submit">Adicionar ao carrinho
+                <i class="fas fa-shopping-cart ml-1"></i>
+              </button>
+            </form>
+
+
+
+          </div>
+          <!--Content-->
+
+        </div>
+        <!--Grid column-->
+
+      </div>
+      <!--Grid row-->
+
+      <hr></div>
+      <div class='card pb-4 mb-3'>
+      <div class="row text-center b border-dark">
+        <div class="col-md-12 mt-5 p-3" style='border-radius: 3%; color: black;'>
+          
+          <h2 class="mb-4">Informações do produto</h2>
+        </div>
+      </div>
+          <div class='col-lg-6 offset-lg-4 offset-2'>
+          {% for descricao in informacao%}
+          
+          <h5>{{descricao}}<h5>
+          {% endfor%}
+      
+        </div></div>
+        <!--Grid column-->
+
+      
+      <!--Grid row-->
+     {% if recomendados%}
+    <div class='card text-center pb-4'>
+      
+
+      {% for categoria in recomendados  %}
+
+        <!--Grid column-->
+        <h2 class='my-4'>Recomendados</h2>
+        <div class="col-lg-4 col-md-12 mb-4 card mx-5 mt-3">
+         
+          <a href=''>
+          
+          <img src="{{categoria.imagem.url}}" class="img-fluid" style='width: 250px; height: 250px;'>
+          <h3>{{categoria}}</h3></a>
+
+        </div>
+        {% endfor %}
+      </div>
+      {% endif%}
+        <div class='card my-4 px-5 accordion text-center'>
+          <h2 class='mb-4'>Avaliações</h2>
+          <h4>{{object|nota}}</h4>
+      
+          <div class="estrelas">
+            <input type="radio" id="cm" name="fbi" checked/>
+            {% for number in '12345'|make_list%}
+            <label><i class="fa"></i></label>
+            {% if forloop.counter == object|nota%}
+            <input type="radio" id="cm_star-{{forloop.counter}}" name="fbi" value="{{forloop.counter}}" checked/>
+            {% else%}
+            <input type="radio" id="cm_star-{{forloop.counter}}" name="fbi" value="{{forloop.counter}}"/>
+            {% endif%}
+            {% endfor %}
+      
+          {% if review or avaliado%}
+          <br>
+          <span> {{object|quantidade}} Comentario<span>
+          {% else%}
+          <br>
+          <span> Seja o primeiro a avaliar esse produto :)</span>
+          {% endif%}
+          <div class='row justify-content-md-end'>
+          {% if avaliado%}
+            
+              </div>
+              {% for comentario in avaliado%}
+              <div class="card mt-3">
+                <div class="card-body">
+                  <h5 class="card-title">{{comentario.titulo}}</h5>
+                  <div class="nota">
+                    {% for number in '12345'|make_list%}
+                    <label><i class="fa"></i></label>
+                    {% if forloop.counter == object|nota%}
+                    <input type="radio" id="cm_{{forloop.counter}}" name="fb" value="{{forloop.counter}}" checked/>
+                    {% else%}
+                    <input type="radio" id="cm_{{forloop.counter}}" name="fb" value="{{forloop.counter}}"/>
+                    {% endif%}
+                    {% endfor %}
+    
+                </div>
+                  <p class="card-text">{{comentario.comentario}}</p>
+                  <form method='post' action="{% url "remover_review" slug=object.slug%}">
+                    {% csrf_token%}
+                  <button type='submit' class='btn'><span style='color: red;'>remover</span></button>
+                  <button type='button' class='btn' data-target="#editar" data-toggle="modal"><span style='color: blue;'>editar</span></button>
+                  </form>
+                
+                  
+                </div>
+              </div>
+            </div>
+              {% endfor%}
+          
+            {% else%}
+            <div class="input-group-append">
+              {% if user.is_authenticated%}
+              <button type="button" class="offset-3 btn btn-secondary" data-toggle="modal" data-target="#exampleModal">
+               Avaliar Produto</button>
+               {% else %}
+               <a href='{% url "login"%}'><button type="button" class="offset-3 btn btn-secondary">
+                Avaliar Produto</button></a>
+               {% endif%}
+            </div>
+          </div>
+            {% endif%}
+          {% for comentario in review%}
+         
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{comentario.titulo}}</h5>
+              <div class="estrelas">
+                {% for number in '12345'|make_list%}
+                <label><i class="fa"></i></label>
+                {% if forloop.counter == object|nota%}
+                <input type="radio" id="cm_{{forloop.counter}}" name="fb" value="{{forloop.counter}}" checked/>
+                {% else%}
+                <input type="radio" id="cm_{{forloop.counter}}" name="fb" value="{{forloop.counter}}"/>
+                {% endif%}
+                {% endfor %}
+              <p class="card-text">{{comentario.comentario}}</p>
+            </div>
+          </div>
+          {% endfor %}
+
+
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Avaliação</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            <div class="modal-body">
+              <form method='post' action='{% url "avaliar" slug=object.slug%}'>
+                {% csrf_token %}
+                <input class='form-control mb-3' name='titulo' placeholder='título'>
+               
+                <div class="nota">
+                  <input type="radio" id="edit-{{forloop.counter}}" name="ma" value="" checked/>
+                {% for number in '12345'|make_list%}
+          
+                <label for="edit-{{forloop.counter}}"><i class="fa"></i></label>
+                <input type="radio" id="edit-{{forloop.counter}}" name="ma" value="{{forloop.counter}}"/>
+                {{forloop.counter}}
+                {% endfor %}
+                <textarea class="form-control mb-3" name='descricao' id="textAreaExample1" placeholder='descrição' rows="5"></textarea>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="submit" class="btn btn-primary">Avaliar</button>
+              </div>
+            </div>
+          </form>
+          </div>
+      <!--Grid row-->
+
+    </div></div></div>
+
+    <div class="modal fade" id="editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Avaliação</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <div class="modal-body">
+          <form method='post' action='{% url "avaliar" slug=object.slug%}'>
+            {% csrf_token %}
+            <input class='form-control mb-3' name='titulo' placeholder='título'>
+           
+            <div class="nota">
+              <input type="radio" id="ledit-{{forloop.counter}}" name="ma1" value="" checked/>
+            {% for number in '12345'|make_list%}
+      
+            <label for="edit-{{forloop.counter}}"><i class="fa"></i></label>
+            <input type="radio" id="ledit-{{forloop.counter}}" name="ma1" value="{{forloop.counter}}"/>
+            {{forloop.counter}}
+            {% endfor %}
+            <textarea class="form-control mb-3" name='descricao' id="textAreaExample1" placeholder='descrição' rows="5"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            <button type="submit" class="btn btn-primary">Avaliar</button>
+          </div>
+        </div>
+      </form>
+        </div>
+  </main>
+  
+  <!--Main layout-->
+
+{% endblock%}

@@ -1,0 +1,66 @@
+{% extends 'base.html'%}{% load static%}
+
+{% block content %}
+<main class="mt-5 pt-4">
+    <div class="container">
+      <h1 class='black-text my-5'> Carrinho de compras<h1>
+        <h6>{{request.session|tamanho_do_carrinho}} produtos no carrinho<h6>
+      <div class="row">
+        <div class='col-md-4 order-md-2 order-sm-1'>
+          <div class='card pt-2 px-5 pb-5'>
+            <h3>Total:<h3>
+            <h1>R$ {{request.session|soma}}</h1>
+            <form action='{% url "finalizar_compra" %}'>
+            <button class='btn btn-secondary btn-md waves-effect p-3'> Finalizar comprar</button>
+            </form>
+          </div>
+        </div>
+        <div class='col-md-8 order-md-1 order-sm-2 card p-5'>
+        {% for produto in request.session|renderizar_carrinho%}
+        <a style='color: black;' href='{% url "produto" slug=produto.slug%}'>
+         <div class='card px-4 py-2 mb-3'>
+          <div class='row'>
+            <img src='{{produto.imagem.thumb.url}}' class='img-fluid mr-3' style='height: 105px; width: 105px;'>
+            <div class='col-6'>
+              <strong>{{produto.nome}}</strong>
+              {% if produto.desconto%}
+            <div class='col-md-6 mt-4'>
+              <del>R$ {{produto.preco}}</del>
+            </br>
+              <span>R$ {{produto.preco|desconto:produto.desconto}}</span>
+            </div>
+            
+            {% else%}
+            <div class='col-md-6 mt-4'>
+              <span>R$ {{produto.preco}}</span></div>
+            {% endif%}
+            <div></div></a>
+            </div>
+            <div class='col-3 text-center align-self-center'>
+  
+    
+        <form action='{% url "add" slug=produto.slug%}' method='post'>
+          {% csrf_token%}
+          <select type='number' onchange="this.form.submit()" name='quantidade' style='width: 60px;'>
+            {% for values in "x"|rjust:"10"%}
+            {% if forloop.counter != request.session|quantidade_produto:produto.slug%}
+            <option value='{{forloop.counter}}'>{{forloop.counter}}</option>
+            {% else%}
+            <option value='{{forloop.counter}}' selected>{{forloop.counter}}</option>
+            {% endif%}
+            {%endfor%}
+          </select>
+        </form>
+
+          
+          <a href='{% url "remove" slug=produto.slug%}'><span class='mx-3'>Excluir<span></a>
+          </div></div></div>
+
+        
+        {% endfor%}
+        </div></div>
+      </div></main>
+
+              <!--Grid column-->
+{% endblock %}
+

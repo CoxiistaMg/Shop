@@ -1,0 +1,27 @@
+{% extends 'styles.html' %}{% load static %}
+
+{% block body%}
+
+<div class='row justify-content-center'>
+    <div class='card-body border col-md-4 col-sm-11 mt-5 p-5 text-center'>
+        <img src='{% static 'img/carrinho-de-compras.png'%}' class='img-fluid mb-4' style='height: 130px;'>
+        <form method='post' autocomplete='off'>
+            <h1 class='mb-5'>Registro</h1>
+            <div class='row'>
+                <div class='col-12 mb-4'>
+            {% csrf_token %}
+            {% for field in form%}
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text fas {% cycle 'fa-envelope' 'fa-user' 'fa-lock' 'fa-lock'%}"></span>
+                </div>
+                <input type="{% cycle 'email' 'text' 'password' 'password'%}" class="form-control" name="{{field.name}}" placeholder="{% cycle 'E-mail' 'Nome Completo' 'Senha' 'Confirme Senha'%}">
+              </div>
+               
+            {% endfor%}
+        </div>
+            <button class='btn btn-success col-12'>Criar Login</button>
+        </form>
+    </div>
+    <div>
+{% endblock%}

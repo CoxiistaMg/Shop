@@ -1,0 +1,35 @@
+{% extends 'styles.html' %}{% load static %}
+
+{% block body %}
+<div class='row justify-content-center'>
+<div class='card-body border col-md-4 col-sm-11 mt-5 p-5 text-center'>
+    <img src='{% static 'img/carrinho-de-compras.png'%}' class='img-fluid mb-4' style='height: 130px;'>
+    <form method='post' autocomplete='off'>
+        {% csrf_token %}
+    <h1 class='mb-5'>Login</h1>
+    <div class='row'>
+        <div class='col-12 mb-4'>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text fas fa-envelope"></span>
+                </div>
+                <input type="email" class="form-control" name='username' placeholder="E-mail">
+              </div>
+            
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <i class="input-group-text fa-solid fa-lock" aria-hidden="true"></i>
+                </div>
+                <input type="password" name='password' class="form-control" placeholder="Senha">
+              </div>
+
+            <a href='' style='fonz-size: 12px;'><span>Esqueci a senha</span><a>
+        </div>
+    </div>
+        <button class='btn btn-success col-12'>Logar</button>
+        <a href='{% url "create"%}'><button type='button' class='btn btn-warning col-12'>Fazer meu Cadastro</button></a>
+    
+    </form>
+</div>
+<div>
+{% endblock body %}
